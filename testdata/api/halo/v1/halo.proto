@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+package halo.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "halo/v1;v1";
+option java_multiple_files = true;
+option java_package = "halo.v1";
+
+service HaloService {
+  // 列表
+  rpc CreateHalo(CreateHaloRequest) returns (CreateHaloResponse) {
+    option (google.api.http) = {
+      post: "/v1/halos"
+      body: "info"
+    };
+  }
+
+  // 获取Halo详情
+  rpc GetHalo(GetHaloRequest) returns (GetHaloResponse) {
+    option (google.api.http) = {get: "/v1/halos/{id}"};
+  }
+
+  // 列表
+  rpc ListHalo(ListHaloRequest) returns (ListHaloResponse) {
+    option (google.api.http) = {get: "/v1/halos"};
+  }
+
+  // 列表
+  rpc UpdateHalo(UpdateHaloRequest) returns (UpdateHaloResponse) {
+    option (google.api.http) = {
+      put: "/v1/halos/{id}"
+      body: "info"
+    };
+  }
+}
+
+message BaseInfo {
+  string name = 1;
+}
+
+message CreateHaloRequest {
+  // 信息
+  Halo info = 1;
+  StatusEnum.Status status = 2;
+}
+message CreateHaloResponse {
+  int64 id = 1;
+}
+
+message GetHaloRequest {
+  int64 id = 1;
+  google.protobuf.Timestamp timestamp = 2 [(google.api.field_behavior) = REQUIRED];
+  string name = 3;
+  string address_info = 4;
+}
+
+message GetHaloResponse {
+  Halo halo = 1;
+  repeated string names = 2;
+  map<string, BaseInfo> ddd = 3;
+  repeated BaseInfo list = 4;
+}
+
+message ListHaloRequest {
+  string keywords = 1;
+}
+message ListHaloResponse {
+  repeated Halo list = 1;
+}
+
+message UpdateHaloRequest {
+  int64 id = 1;
+  Halo info = 2;
+  string name = 3;
+}
+message UpdateHaloResponse {
+  int64 id = 1;
+}
+
+message Halo {
+  // 姓名
+  string name = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // 年龄
+  int32 age = 2;
+
+  // 邮箱
+  string email = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // debug模式
+  DebugModeEnum.DebugMode debug_type = 4;
+
+  Address address = 5;
+
+  oneof campaign {
+    // 推广计划名称
+    string campaign_name = 6;
+
+    // 推广计划类型
+    int32 campaign_type = 7;
+  }
+}
+
+// 状态枚举定义值
+message StatusEnum {
+  // 状态枚举
+  enum Status {
+    // 未指定
+    UNSPECIFIED = 0;
+
+    // 正常
+    NORMAL = 1;
+
+    // 调试
+    DEBUG = 2;
+  }
+}
+
+message DebugModeEnum {
+  enum DebugMode {
+    UNSPECIFIED = 0;
+
+    FORMAL = 1;
+
+    DEBUG = 2;
+  }
+}
+
+message Address {
+  string street = 1;
+  string code = 2;
+}

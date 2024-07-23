@@ -1,0 +1,17 @@
+version: v2
+managed:
+  enabled: true
+  #  disable:
+  #    - module: buf.build/googleapis/googleapis
+  override:
+    - file_option: optimize_for
+      value: SPEED
+#    - file_option: java_package_prefix
+#      value: ddddddddddddddddddddd
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: gen/go
+  - local: protoc-gen-go-http
+    out: gen/go/kratos
+  - local: protoc-gen-java-http
+    out: gen/java/src/main/java
